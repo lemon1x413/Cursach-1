@@ -1,0 +1,123 @@
+﻿<Window x:Class="Cursach_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cursach_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="530" Width="800" MinHeight="530" MinWidth="800">
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- Розмір матриці -->
+            <RowDefinition Height="Auto" />  <!-- Керування -->
+            <RowDefinition Height="*" />     <!-- Матриці -->
+            <RowDefinition Height="Auto" />  <!-- Статус-бар -->
+        </Grid.RowDefinitions>
+
+        <!-- Вказати розмір матриці -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Розмір матриці:" VerticalAlignment="Center" Grid.Column="0" />
+            <TextBox x:Name="MatrixSize" HorizontalAlignment="Left" Width="50" Text="3" Height="20" Grid.Column="2" />
+            <Button x:Name="BtnSetSize"
+                    HorizontalAlignment="Left"
+                    Grid.Column="4"
+                    Content="Задати розмір"
+                    Width="100"
+                    Click="BtnSetSize_Click" />
+            <TextBlock Text="Кількість відображуваних знаків після коми:" VerticalAlignment="Center" Grid.Column="6" />
+            <TextBox x:Name="MatrixFormat" HorizontalAlignment="Left" Width="50" Text="2" Height="20" Grid.Column="8" />
+            <Button x:Name="BtnSetFormat"
+                    HorizontalAlignment="Left"
+                    Grid.Column="10"
+                    Content="Задати розмір"
+                    Width="100"
+                    Click="BtnSetFormat_Click" />
+
+        </Grid>
+        <!-- Панель керування -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="BtnLoad"
+                    Grid.Column="0"
+                    Content="Завантажити файл..."
+                    Width="140"
+                    Click="BtnLoad_Click" />
+            <Button x:Name="BtnGenerate"
+                    Grid.Column="2"
+                    Content="Згенерувати матрицю"
+                    Width="160"
+                    Click="BtnGenerate_Click" />
+            <TextBlock Text="Метод:" VerticalAlignment="Center"
+                       HorizontalAlignment="Left"
+                       Grid.Column="4" />
+            <ComboBox x:Name="InversionMethod"
+                      HorizontalAlignment="Right"
+                      Grid.Column="6"
+                      Width="200"
+                      Height="25"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="Метод окаймлення" />
+                <ComboBoxItem Content="Метод LUP-розкладу" />
+            </ComboBox>
+            <Button x:Name="BtnInvert"
+                    HorizontalAlignment="Right"
+                    Grid.Column="8"
+                    Content="Обчислити обернену"
+                    Width="160"
+                    Click="BtnInvert_Click" />
+        </Grid>
+        <!-- Відображення матриць -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Оригінальна матриця" Grid.Column="0">
+                <DataGrid x:Name="OriginalMatrixGrid"
+                          IsReadOnly="False"
+                          AutoGenerateColumns="True"
+                          CanUserAddRows="False" 
+                          AutoGeneratingColumn="Formating"/>
+            </GroupBox>
+
+            <GroupBox Header="Обернена матриця" Grid.Column="2">
+                <DataGrid x:Name="InverseMatrixGrid"
+                          IsReadOnly="True"
+                          AutoGenerateColumns="True"
+                          AutoGeneratingColumn="Formating"/>
+            </GroupBox>
+        </Grid>
+
+        <!-- Статус-бар -->
+        <StatusBar Grid.Row="3">
+            <TextBlock x:Name="StatusBar" Text="Готово" />
+        </StatusBar>
+    </Grid>
+</Window>
