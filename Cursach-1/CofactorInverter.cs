@@ -10,11 +10,15 @@
             var cof = CofactorMatrix(m);
             var inv = Transpose(cof);
             for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                inv[i, j] /= det;
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    inv[i, j] /= det;
+                }
+            }
             return inv;
         }
-
+        
         private static double Determinant(Matrix m)
         {
             int n = m.N;
@@ -25,7 +29,7 @@
                 det += Math.Pow(-1, j) * m[0, j] * Determinant(Submatrix(m, 0, j));
             return det;
         }
-
+        
         private static Matrix CofactorMatrix(Matrix m)
         {
             int n = m.N;
@@ -50,7 +54,6 @@
                             sub[r, c++] = m[i, j];
                     r++;
                 }
-
             return sub;
         }
 
@@ -63,5 +66,6 @@
                 t[i, j] = m[j, i];
             return t;
         }
+        
     }
 }

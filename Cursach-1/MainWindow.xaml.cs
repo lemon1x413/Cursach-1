@@ -4,14 +4,17 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cursach_1{
     public partial class MainWindow : Window
     {
         private DataTable _dataTableOriginal;
 
-        private int _n = 2;
+        private Matrix? _invertedMatrix;
         
+        private const int N = 10;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -22,13 +25,13 @@ namespace Cursach_1{
             if (e.PropertyType == typeof(double))
             {
                 var col = e.Column as DataGridTextColumn;
-                col.Binding.StringFormat = "F" + _n;
+                col.Binding.StringFormat = "F" + N;
             }
         }
         
         private void BtnSetSize_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(MatrixSize.Text, out int size) || size <= 0)
+            if (!int.TryParse(MatrixSize.Text, out int size) || size <= 0 )
             {
                 MessageBox.Show("Невірний розмір.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -36,17 +39,6 @@ namespace Cursach_1{
 
             InitializeMatrix(size);
             StatusBar.Text = $"Розмір матриці встановлено: {size}x{size}";
-        }
-
-        private void BtnSetFormat_Click(object sender, RoutedEventArgs e)
-        {
-            if (!int.TryParse(MatrixFormat.Text, out _n) || _n <= 0)
-            {
-                MessageBox.Show("Невірна кількість знаків після коми.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            
-            StatusBar.Text = $"Кількість знаків після коми встановлено: {_n}";
         }
         
         private void InitializeMatrix(int size)
@@ -83,6 +75,24 @@ namespace Cursach_1{
                 }
             }
         }
+        
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (_invertedMatrix == null) { MessageBox.Show("Спочатку обчисліть обернену матрицю.", "Увага", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+            var dlg = new SaveFileDialog { Filter = "Text Files|*.txt;*.csv|All|*.*", FileName = "inverse_matrix.txt" };
+            if (dlg.ShowDialog() == true)
+            {
+                try
+                {
+                    FileHandler.SaveMatrix(_invertedMatrix, dlg.FileName);
+                    StatusBar.Text = "Обернену матрицю збережено.";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Помилка при збереженні: " + ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
 
         private void BtnGenerate_Click(object sender, RoutedEventArgs e)
         {
@@ -98,7 +108,7 @@ namespace Cursach_1{
             for (int j = 0; j < m.N; j++)
                 _dataTableOriginal.Rows[i][j] = m[i, j];
         }
-
+        
         private void BtnInvert_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -106,16 +116,19 @@ namespace Cursach_1{
                 int n = _dataTableOriginal.Columns.Count;
                 var matrix = new Matrix(n);
                 for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                    matrix[i, j] = Convert.ToDouble(_dataTableOriginal.Rows[i][j]);
-
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        matrix[i, j] = Convert.ToDouble(_dataTableOriginal.Rows[i][j]);
+                    }
+                }
                 var time = Stopwatch.StartNew();
-                Matrix inverted = InversionMethod.SelectedIndex == 0
+                _invertedMatrix = InversionMethod.SelectedIndex == 0
                     ? CofactorInverter.Invert(matrix)
                     : LupInverter.Invert(matrix);
                 time.Stop();
 
-                var invertedMatrix = inverted.ToDataTable();
+                var invertedMatrix = _invertedMatrix.ToDataTable();
                 InverseMatrixGrid.ItemsSource = invertedMatrix.DefaultView;
                 StatusBar.Text = $"Готово. Час виконання: {time.ElapsedMilliseconds} ms";
             }

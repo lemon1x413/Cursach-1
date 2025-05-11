@@ -1,15 +1,19 @@
 ﻿using System.Data;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Cursach_1
 {
     public class Matrix
     {
-        public int N { get; }
+        private int _n;
+        public int N => _n;
         private double[,] _matrix;
 
+        
         public Matrix(int n)
         {
             if (n <= 0) throw new ArgumentException("Розмір повинен бути > 0");
-            N = n;
+            _n = n;
             _matrix = new double[n, n];
         }
 
@@ -24,19 +28,26 @@ namespace Cursach_1
             var rand = new Random();
             var m = new Matrix(size);
             for (int i = 0; i < size; i++)
-            for (int j = 0; j < size; j++)
-                m[i, j] = rand.NextDouble() * 10;
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    m[i, j] = rand.NextDouble() * 10;
+                }
+            }
             return m;
         }
 
         public DataTable ToDataTable()
         {
             var dataTable = new DataTable();
-            for (int j = 0; j < N; j++) dataTable.Columns.Add(j.ToString(), typeof(double));
-            for (int i = 0; i < N; i++)
+            for (int j = 0; j < _n; j++)
+            {
+                dataTable.Columns.Add(j.ToString(), typeof(double));
+            }
+            for (int i = 0; i < _n; i++)
             {
                 var row = dataTable.NewRow();
-                for (int j = 0; j < N; j++) row[j] = _matrix[i, j];
+                for (int j = 0; j < _n; j++) row[j] = _matrix[i, j];
                 dataTable.Rows.Add(row);
             }
 
