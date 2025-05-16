@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cursach_1
+﻿namespace Cursach_1
 {
     public static class LupInverter
     {

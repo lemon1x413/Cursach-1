@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 
 namespace Cursach_1
 {
@@ -9,17 +7,20 @@ namespace Cursach_1
         public static Matrix LoadMatrix(string path)
         {
             var lines = File.ReadAllLines(path)
-                .Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .ToArray();
             int n = lines.Length;
-            var m = new Matrix(n);
+            var matrix = new Matrix(n);
             for (int i = 0; i < n; i++)
             {
-                var parts = lines[i].Split(new[] { ' ', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = lines[i].Split(new[] { ' ', '\t'}, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length != n) throw new FormatException("Некоректна кількість елементів у рядку");
-                for (int j = 0; j < n; j++) m[i, j] = double.Parse(parts[j]);
+                for (int j = 0; j < n; j++)
+                {
+                    matrix[i, j] = double.Parse(parts[j]);
+                }
             }
-
-            return m;
+            return matrix;
         }
 
         public static void SaveMatrix(Matrix m, string path)
@@ -27,7 +28,7 @@ namespace Cursach_1
             using var sw = new StreamWriter(path);
             for (int i = 0; i < m.N; i++)
             {
-                var row = string.Join(" ", Enumerable.Range(0, m.N).Select(j => m[i, j].ToString()));
+                var row = string.Join(" ", Enumerable.Range(0, m.N).Select(j => m[i, j].ToString("F2")));
                 sw.WriteLine(row);
             }
         }

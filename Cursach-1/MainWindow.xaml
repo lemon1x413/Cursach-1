@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cursach_1"
         mc:Ignorable="d"
-        Title="Matrix inversion calculator" Height="530" Width="800" MinHeight="530" MinWidth="800">
-    
+        Title="Калькулятор обернених матриць" Height="530" Width="800" MinHeight="530" MinWidth="800">
+
     <Grid>
         <!--загальна розмітка вікна(аля Margin)-->
         <Grid.RowDefinitions>
@@ -25,7 +25,7 @@
                 <RowDefinition Height="Auto" />  <!-- Розмір матриці -->
                 <RowDefinition Height="Auto" />  <!-- Керування -->
                 <RowDefinition Height="*" />     <!-- Матриці -->
-                <RowDefinition Height="Auto"/>   <!-- Статус Бар -->
+                <RowDefinition Height="Auto" />   <!-- Статус Бар -->
             </Grid.RowDefinitions>
             <!-- Панель керування -->
             <Grid Grid.Row="0">
@@ -44,9 +44,15 @@
                     <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <TextBlock Text="Розмір матриці:" VerticalAlignment="Center" Grid.Column="0" />
-                <TextBox x:Name="MatrixSize" HorizontalAlignment="Left" Width="50" Text="3" Height="20" Grid.Column="2" />
+                <TextBlock Text="Розмір матриці:"
+                           VerticalAlignment="Center"
+                           Grid.Column="0" />
+                <TextBox x:Name="MatrixSize"
+                         HorizontalAlignment="Left"
+                         Width="50"
+                         Text="3"
+                         Height="20"
+                         Grid.Column="2" />
                 <Button x:Name="BtnSetSize"
                         Margin="0"
                         HorizontalAlignment="Left"
@@ -55,18 +61,14 @@
                         Width="100"
                         Height="25"
                         Click="BtnSetSize_Click" />
-                <Button x:Name="Info"
-                        Padding="0"
+                <Button x:Name="BtnClear"
                         Margin="0"
-                        Width="15"
-                        Height="15"
+                        
+                        Height="25"
                         VerticalAlignment="Center"
-                        ToolTip="При виборі розміру матриці більше 10х10, метод окаймлення "
-                        Content="i"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Grid.Column="6"/>
-                <TextBlock Text="Метод:" 
+                        Content="Очистити"
+                        Grid.Column="6" />
+                <TextBlock Text="Метод:"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Grid.Column="8" />
@@ -124,21 +126,31 @@
                     <DataGrid x:Name="OriginalMatrixGrid"
                               IsReadOnly="False"
                               AutoGenerateColumns="True"
-                              CanUserAddRows="False" 
-                              AutoGeneratingColumn="Formating"/>
+                              CanUserAddRows="False"
+                              AutoGeneratingColumn="Formating" />
                 </GroupBox>
 
                 <GroupBox Header="Обернена матриця" Grid.Column="2">
                     <DataGrid x:Name="InverseMatrixGrid"
                               IsReadOnly="True"
                               AutoGenerateColumns="True"
-                              AutoGeneratingColumn="Formating"/>
+                              AutoGeneratingColumn="Formating" />
                 </GroupBox>
             </Grid>
             <!--СтатусБар-->
-            <StatusBar Grid.Row="3">
-                <TextBlock x:Name="StatusBar" Text="Готово" />
-            </StatusBar>
+            <Grid Grid.Row="3">
+                
+                <StatusBar>
+                    <TextBlock x:Name="StatusBar" Text="" />
+                </StatusBar>
+                <Button x:Name="BtnShowInfo" 
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0"
+                        Content="Довідка"
+                        Click="BtnShowInfo_Click"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
