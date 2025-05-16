@@ -35,6 +35,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="10" />
@@ -53,12 +55,24 @@
                         Width="100"
                         Height="25"
                         Click="BtnSetSize_Click" />
-                <TextBlock Text="Метод:" VerticalAlignment="Center"
+                <Button x:Name="Info"
+                        Padding="0"
+                        Margin="0"
+                        Width="15"
+                        Height="15"
+                        VerticalAlignment="Center"
+                        ToolTip="При виборі розміру матриці більше 10х10, метод окаймлення "
+                        Content="i"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Grid.Column="6"/>
+                <TextBlock Text="Метод:" 
+                           VerticalAlignment="Center"
                            HorizontalAlignment="Left"
-                           Grid.Column="6" />
+                           Grid.Column="8" />
                 <ComboBox x:Name="InversionMethod"
                           HorizontalAlignment="Right"
-                          Grid.Column="8"
+                          Grid.Column="10"
                           Width="200"
                           Height="25"
                           SelectedIndex="0">
@@ -67,7 +81,7 @@
                 </ComboBox>
                 <Button x:Name="BtnInvert"
                         HorizontalAlignment="Right"
-                        Grid.Column="10"
+                        Grid.Column="12"
                         Content="Обчислити обернену"
                         Width="160"
                         Click="BtnInvert_Click" />
