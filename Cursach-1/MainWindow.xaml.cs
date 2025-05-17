@@ -55,6 +55,23 @@ namespace Cursach_1
             InverseMatrixGrid.ItemsSource = null;
         }
 
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        {
+            ClearMatrixInput();
+            StatusBar.Text = "Матриця очищена.";
+        }
+        private void ClearMatrixInput()
+        {
+            var size = _dataTableOriginal.Columns.Count;
+            for (int i = 0; i < size; i++)
+            {
+                var row = _dataTableOriginal.Rows[i];
+                for (int j = 0; j < size; j++)
+                {
+                    row[j] = 0.0;
+                }
+            }
+        }
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog { Filter = "Text Files|*.txt" };
@@ -179,5 +196,6 @@ namespace Cursach_1
                 "Примітка: Для матриці розміром більше 8 метод окаймлення може не працювати, тому програма запропонує використання методу LUP-розкладу.",
                 "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        
     }
 }

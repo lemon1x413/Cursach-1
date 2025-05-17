@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cursach_1"
         mc:Ignorable="d"
-        Title="Калькулятор обернених матриць" Height="530" Width="800" MinHeight="530" MinWidth="800">
+        Title="Калькулятор обернених матриць" Height="530" Width="900" MinHeight="530" MinWidth="900">
 
     <Grid>
         <!--загальна розмітка вікна(аля Margin)-->
@@ -63,11 +63,12 @@
                         Click="BtnSetSize_Click" />
                 <Button x:Name="BtnClear"
                         Margin="0"
-                        
                         Height="25"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="Очистити"
-                        Grid.Column="6" />
+                        Grid.Column="6" 
+                        Click="BtnClear_Click"/>
                 <TextBlock Text="Метод:"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"

@@ -44,17 +44,18 @@
                         pivot = i;
                     }
                 }
-                if (max < 1e-9) throw new InvalidOperationException("Матриця вироджена");
-
-                Swap(P, k, pivot);
+                if (max < 1e-9) throw new InvalidOperationException("Матриця вироджена (Визначник матриці рівний нулю)");
+                
+                (P[k], P[pivot]) = (P[pivot], P[k]);
+                
                 for (int j = 0; j < n; j++)
                 {
-                    Swap(m, k, j, pivot, j);
+                    (m[k, j], m[pivot, j]) = (m[pivot, j], m[k, j]);
                 }
 
                 for (int j = 0; j < k; j++)
                 {
-                    Swap(L, k, j, pivot, j);
+                    (L[k, j], L[pivot, j]) = (L[pivot, j], L[k, j]);
                 }
 
                 L[k, k] = 1;
@@ -121,15 +122,6 @@
             }
             return det;
         }
-
-        private static void Swap(int[] P, int i, int j)
-        {
-            (P[i], P[j]) = (P[j], P[i]);
-        }
-
-        private static void Swap(Matrix m, int i1, int j1, int i2, int j2)
-        {
-            (m[i1, j1], m[i2, j2]) = (m[i2, j2], m[i1, j1]);
-        }
+        
     }
 }
