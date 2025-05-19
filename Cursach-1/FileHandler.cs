@@ -23,13 +23,13 @@ namespace Cursach_1
             return matrix;
         }
 
-        public static void SaveMatrix(Matrix m, string path)
+        public static void SaveMatrix(Matrix matrix, string path)
         {
-            using var sw = new StreamWriter(path);
-            for (int i = 0; i < m.N; i++)
+            using var streamWriterw = new StreamWriter(path);
+            for (int i = 0; i < matrix.N; i++)
             {
-                var row = string.Join(" ", Enumerable.Range(0, m.N).Select(j => m[i, j].ToString("F2")));
-                sw.WriteLine(row);
+                var row = string.Join(" ", Enumerable.Range(0, matrix.N).Select(j => matrix[i, j].ToString("F2")));
+                streamWriterw.WriteLine(row);
             }
         }
     }

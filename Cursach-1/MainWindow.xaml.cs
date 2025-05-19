@@ -23,9 +23,9 @@ namespace Cursach_1
 
         private void BtnSetSize_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(MatrixSize.Text, out int size) || size <= 0 || size > 25)
+            if (!int.TryParse(MatrixSize.Text, out int size) || size <= 0 || size > 10)
             {
-                MessageBox.Show("Невірний розмір.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Невірний розмір. Введіть додатнє ціле число не більше 10.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 MatrixSize.Text = "";
                 return;
             }
@@ -57,10 +57,10 @@ namespace Cursach_1
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
-            ClearMatrixInput();
+            ClearTableOriginal();
             StatusBar.Text = "Матриця очищена.";
         }
-        private void ClearMatrixInput()
+        private void ClearTableOriginal()
         {
             var size = _dataTableOriginal.Columns.Count;
             for (int i = 0; i < size; i++)
@@ -140,13 +140,6 @@ namespace Cursach_1
             try
             {
                 int n = _dataTableOriginal.Columns.Count;
-                if (n >= 8 && InversionMethod.SelectedIndex == 0)
-                {
-                    if (MessageBox.Show(
-                            "Через великий розмір матриці метод окаймлення може не працювати. Чи бажаєте використати методу LUP-розкладу?",
-                            "Попередження", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                        InversionMethod.SelectedIndex = 1;
-                }
 
                 var matrix = new Matrix(n);
                 for (int i = 0; i < n; i++)
@@ -159,7 +152,7 @@ namespace Cursach_1
 
                 var time = Stopwatch.StartNew();
                 _invertedMatrix = InversionMethod.SelectedIndex == 0
-                    ? CofactorInverter.Invert(matrix)
+                    ? BorderingInverter.Invert(matrix)
                     : LupInverter.Invert(matrix);
                 time.Stop();
 
@@ -190,10 +183,8 @@ namespace Cursach_1
                 "1. Метод окаймлення: Використовується для обчислення оберненої матриці шляхом розділення матриці на менші підматриці.\n" +
                 "2. Метод LUP-розкладу: Використовує розкладання матриці на нижню, верхню та переставлену матриці для обчислення оберненої матриці.\n\n" +
                 "Вимоги:\n" +
-                "- Розмір матриці має бути додатним цілим числом і не бути не більше 25.\n" +
-                "- Програма перевіряє, чи введене значення є дійсним цілим числом і чи воно більше нуля.\n" +
-                "- У разі некоректного введення програма відобразить повідомлення про помилку.\n\n" +
-                "Примітка: Для матриці розміром більше 8 метод окаймлення може не працювати, тому програма запропонує використання методу LUP-розкладу.",
+                "- Розмір матриці має бути додатним цілим числом і не бути не більше 10.\n" +
+                "- У разі некоректного введення програма відобразить повідомлення про помилку.\n\n",
                 "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         

@@ -2,10 +2,10 @@
 {
     public static class LupInverter
     {
-        public static Matrix Invert(Matrix m)
+        public static Matrix Invert(Matrix matrix)
         {
-            int n = m.N;
-            var (L, U, P) = Decompose(m);
+            int n = matrix.N;
+            var (L, U, P) = Decompose(matrix);
             if (Math.Abs(Determinant(U)) < 1e-9)
                 throw new InvalidOperationException("Матриця вироджена (Визначник матриці рівний нулю)");
             var inv = new Matrix(n);
@@ -21,9 +21,9 @@
             return inv;
         }
 
-        private static (Matrix L, Matrix U, int[] P) Decompose(Matrix m)
+        private static (Matrix L, Matrix U, int[] P) Decompose(Matrix matrix)
         {
-            int n = m.N;
+            int n = matrix.N;
             var L = new Matrix(n);
             var U = new Matrix(n);
             var P = new int[n];
@@ -38,9 +38,9 @@
                 int pivot = k;
                 for (int i = k; i < n; i++)
                 {
-                    if (Math.Abs(m[i, k]) > max)
+                    if (Math.Abs(matrix[i, k]) > max)
                     {
-                        max = Math.Abs(m[i, k]);
+                        max = Math.Abs(matrix[i, k]);
                         pivot = i;
                     }
                 }
@@ -50,7 +50,7 @@
                 
                 for (int j = 0; j < n; j++)
                 {
-                    (m[k, j], m[pivot, j]) = (m[pivot, j], m[k, j]);
+                    (matrix[k, j], matrix[pivot, j]) = (matrix[pivot, j], matrix[k, j]);
                 }
 
                 for (int j = 0; j < k; j++)
@@ -62,16 +62,16 @@
 
                 for (int i = k + 1; i < n; i++)
                 {
-                    L[i, k] = m[i, k] / m[k, k];
+                    L[i, k] = matrix[i, k] / matrix[k, k];
                     for (int j = k; j < n; j++)
                     {
-                        m[i, j] -= L[i, k] * m[k, j];
+                        matrix[i, j] -= L[i, k] * matrix[k, j];
                     }
                 }
 
                 for (int j = k; j < n; j++)
                 {
-                    U[k, j] = m[k, j];
+                    U[k, j] = matrix[k, j];
                 }
             }
 
@@ -82,7 +82,10 @@
         {
             int n = P.Length;
             var res = new double[n];
-            for (int i = 0; i < n; i++) res[i] = b[P[i]];
+            for (int i = 0; i < n; i++)
+            {
+                res[i] = b[P[i]];
+            }
             return res;
         }
 
@@ -93,7 +96,10 @@
             for (int i = 0; i < n; i++)
             {
                 y[i] = b[i];
-                for (int j = 0; j < i; j++) y[i] -= L[i, j] * y[j];
+                for (int j = 0; j < i; j++)
+                {
+                    y[i] -= L[i, j] * y[j];
+                }
             }
 
             return y;
@@ -106,19 +112,22 @@
             for (int i = n - 1; i >= 0; i--)
             {
                 x[i] = y[i];
-                for (int j = i + 1; j < n; j++) x[i] -= U[i, j] * x[j];
+                for (int j = i + 1; j < n; j++)
+                {
+                    x[i] -= U[i, j] * x[j];
+                }
                 x[i] /= U[i, i];
             }
 
             return x;
         }
 
-        private static double Determinant(Matrix m)
+        private static double Determinant(Matrix matrix)
         {
             double det = 1;
-            for (int i = 0; i < m.N; i++)
+            for (int i = 0; i < matrix.N; i++)
             {
-                det *= m[i, i];
+                det *= matrix[i, i];
             }
             return det;
         }
