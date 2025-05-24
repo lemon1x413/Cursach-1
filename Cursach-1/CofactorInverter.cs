@@ -46,14 +46,20 @@
             var sub = new Matrix(n - 1);
             int r = 0;
             for (int i = 0; i < n; i++)
+            {
                 if (i != row)
                 {
                     int c = 0;
                     for (int j = 0; j < n; j++)
+                    {
                         if (j != col)
+                        {
                             sub[r, c++] = matrix[i, j];
+                        }
+                    }
                     r++;
                 }
+            }
             return sub;
         }
 
@@ -62,8 +68,13 @@
             int n = matrix.N;
             var t = new Matrix(n);
             for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                t[i, j] = matrix[j, i];
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    t[i, j] = matrix[j, i];
+                }
+                
+            }
             return t;
         }
         

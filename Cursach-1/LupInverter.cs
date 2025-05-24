@@ -1,136 +1,150 @@
-﻿namespace Cursach_1
-{
-    public static class LupInverter
-    {
-        public static Matrix Invert(Matrix matrix)
-        {
-            int n = matrix.N;
-            var (L, U, P) = Decompose(matrix);
-            if (Math.Abs(Determinant(U)) < 1e-9)
-                throw new InvalidOperationException("Матриця вироджена (Визначник матриці рівний нулю)");
-            var inv = new Matrix(n);
-            for (int i = 0; i < n; i++)
-            {
-                var e = new double[n];
-                e[i] = 1;
-                var y = ForwardSolve(L, Permute(P, e));
-                var x = BackwardSolve(U, y);
-                for (int j = 0; j < n; j++) inv[j, i] = x[j];
-            }
+﻿namespace Cursach_1;
 
-            return inv;
+public static class LupInverter
+{
+    public static readonly IterationCounter IterationCounter = new();
+
+    public static Matrix Invert(Matrix matrix)
+    {
+        IterationCounter.ResetCurrentMethod();
+        int n = matrix.N;
+        var (L, U, P) = Decompose(matrix);
+        if (Math.Abs(Determinant(U)) < 1e-9)
+            throw new InvalidOperationException("Матриця вироджена (визначник матриці рівний нулю)");
+        var inverse = new Matrix(n);
+        for (int i = 0; i < n; i++)
+        {
+            IterationCounter.AddIteration();
+            var E = new double[n];
+            E[i] = 1;
+            var y = ForwardSolve(L, Permute(P, E));
+            var x = BackwardSolve(U, y);
+            for (int j = 0; j < n; j++)
+            {
+                inverse[j, i] = x[j];
+            }
         }
 
-        private static (Matrix L, Matrix U, int[] P) Decompose(Matrix matrix)
+        return inverse;
+    }
+
+    private static (Matrix L, Matrix U, int[] P) Decompose(Matrix matrix)
+    {
+        int n = matrix.N;
+        var L = new Matrix(n);
+        var U = new Matrix(n);
+        var P = new int[n];
+        for (int i = 0; i < n; i++)
         {
-            int n = matrix.N;
-            var L = new Matrix(n);
-            var U = new Matrix(n);
-            var P = new int[n];
-            for (int i = 0; i < n; i++)
+            P[i] = i;
+        }
+
+        for (int k = 0; k < n; k++)
+        {
+            IterationCounter.AddIteration();
+            double max = 0;
+            int pivot = k;
+            for (int i = k; i < n; i++)
             {
-                P[i] = i;
+                if (Math.Abs(matrix[i, k]) > max)
+                {
+                    max = Math.Abs(matrix[i, k]);
+                    pivot = i;
+                }
             }
 
-            for (int k = 0; k < n; k++)
+            if (max < 1e-9) throw new InvalidOperationException("Матриця вироджена (визначник матриці рівний нулю)");
+
+            (P[k], P[pivot]) = (P[pivot], P[k]);
+
+            for (int j = 0; j < n; j++)
             {
-                double max = 0;
-                int pivot = k;
-                for (int i = k; i < n; i++)
-                {
-                    if (Math.Abs(matrix[i, k]) > max)
-                    {
-                        max = Math.Abs(matrix[i, k]);
-                        pivot = i;
-                    }
-                }
-                if (max < 1e-9) throw new InvalidOperationException("Матриця вироджена (Визначник матриці рівний нулю)");
-                
-                (P[k], P[pivot]) = (P[pivot], P[k]);
-                
-                for (int j = 0; j < n; j++)
-                {
-                    (matrix[k, j], matrix[pivot, j]) = (matrix[pivot, j], matrix[k, j]);
-                }
+                (matrix[k, j], matrix[pivot, j]) = (matrix[pivot, j], matrix[k, j]);
+            }
 
-                for (int j = 0; j < k; j++)
-                {
-                    (L[k, j], L[pivot, j]) = (L[pivot, j], L[k, j]);
-                }
+            for (int j = 0; j < k; j++)
+            {
+                (L[k, j], L[pivot, j]) = (L[pivot, j], L[k, j]);
+            }
 
-                L[k, k] = 1;
+            L[k, k] = 1;
 
-                for (int i = k + 1; i < n; i++)
-                {
-                    L[i, k] = matrix[i, k] / matrix[k, k];
-                    for (int j = k; j < n; j++)
-                    {
-                        matrix[i, j] -= L[i, k] * matrix[k, j];
-                    }
-                }
-
+            for (int i = k + 1; i < n; i++)
+            {
+                L[i, k] = matrix[i, k] / matrix[k, k];
                 for (int j = k; j < n; j++)
                 {
-                    U[k, j] = matrix[k, j];
+                    IterationCounter.AddIteration();
+                    matrix[i, j] -= L[i, k] * matrix[k, j];
                 }
             }
 
-            return (L, U, P);
-        }
-
-        private static double[] Permute(int[] P, double[] b)
-        {
-            int n = P.Length;
-            var res = new double[n];
-            for (int i = 0; i < n; i++)
+            for (int j = k; j < n; j++)
             {
-                res[i] = b[P[i]];
+                U[k, j] = matrix[k, j];
             }
-            return res;
         }
 
-        private static double[] ForwardSolve(Matrix L, double[] b)
+        return (L, U, P);
+    }
+
+    private static double[] Permute(int[] P, double[] b)
+    {
+        int n = P.Length;
+        var res = new double[n];
+        for (int i = 0; i < n; i++)
         {
-            int n = L.N;
-            var y = new double[n];
-            for (int i = 0; i < n; i++)
-            {
-                y[i] = b[i];
-                for (int j = 0; j < i; j++)
-                {
-                    y[i] -= L[i, j] * y[j];
-                }
-            }
-
-            return y;
+            IterationCounter.AddIteration();
+            res[i] = b[P[i]];
         }
 
-        private static double[] BackwardSolve(Matrix U, double[] y)
+        return res;
+    }
+
+    private static double[] ForwardSolve(Matrix L, double[] b)
+    {
+        int n = L.N;
+        var y = new double[n];
+        for (int i = 0; i < n; i++)
         {
-            int n = U.N;
-            var x = new double[n];
-            for (int i = n - 1; i >= 0; i--)
+            y[i] = b[i];
+            for (int j = 0; j < i; j++)
             {
-                x[i] = y[i];
-                for (int j = i + 1; j < n; j++)
-                {
-                    x[i] -= U[i, j] * x[j];
-                }
-                x[i] /= U[i, i];
+                IterationCounter.AddIteration();
+                y[i] -= L[i, j] * y[j];
             }
-
-            return x;
         }
 
-        private static double Determinant(Matrix matrix)
+        return y;
+    }
+
+    private static double[] BackwardSolve(Matrix U, double[] y)
+    {
+        int n = U.N;
+        var x = new double[n];
+        for (int i = n - 1; i >= 0; i--)
         {
-            double det = 1;
-            for (int i = 0; i < matrix.N; i++)
+            x[i] = y[i];
+            for (int j = i + 1; j < n; j++)
             {
-                det *= matrix[i, i];
+                IterationCounter.AddIteration();
+                x[i] -= U[i, j] * x[j];
             }
-            return det;
+
+            x[i] /= U[i, i];
         }
-        
+
+        return x;
+    }
+
+    private static double Determinant(Matrix matrix)
+    {
+        double det = 1;
+        for (int i = 0; i < matrix.N; i++)
+        {
+            det *= matrix[i, i];
+        }
+
+        return det;
     }
 }
