@@ -10,6 +10,7 @@ public static class FileHandler
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .ToArray();
         int n = lines.Length;
+        if (n > 10) throw new FormatException("Матриця повинна бути розміром не більше 10 х 10.");
         var matrix = new Matrix(n);
         for (int i = 0; i < n; i++)
         {

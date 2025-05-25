@@ -9,4 +9,12 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Remove="calculator.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\calculator.ico" />
+    </ItemGroup>
+
 </Project>

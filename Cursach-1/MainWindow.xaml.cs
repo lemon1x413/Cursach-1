@@ -37,7 +37,6 @@ public partial class MainWindow
 
             _dataTableOriginal.Rows.Add(row);
         }
-
         OriginalMatrixGrid.ItemsSource = _dataTableOriginal.DefaultView;
         InverseMatrixGrid.ItemsSource = null;
     }
@@ -53,6 +52,7 @@ public partial class MainWindow
         }
 
         InitializeDataTable(size);
+        _invertedMatrix = null;
         StatusBar.Text = $"Розмір матриці встановлено: {size}x{size}";
     }
 
@@ -60,6 +60,7 @@ public partial class MainWindow
     {
         ClearTableOriginal();
         InverseMatrixGrid.ItemsSource = null;
+        _invertedMatrix = null;
         StatusBar.Text = "Матрицю очищено.";
     }
 
@@ -124,6 +125,7 @@ public partial class MainWindow
     {
         var matrix = Matrix.RandomGenerate(_dataTableOriginal.Columns.Count);
         LoadFromMatrix(matrix);
+        _invertedMatrix = null;
         StatusBar.Text = "Матрицю згенеровано.";
     }
 
@@ -151,7 +153,7 @@ public partial class MainWindow
                 for (int j = 0; j < n; j++)
                 {
                     matrix[i, j] = Convert.ToDouble(_dataTableOriginal.Rows[i][j]);
-                    if (matrix[i, j] != 0 && (Math.Abs(matrix[i, j]) < 1e-5 || Math.Abs(matrix[i, j]) > 1e5)) throw new InvalidOperationException($"Значення в a[{i+1}, {j+1}] занадто велике / мале.");
+                    if (matrix[i, j] != 0 && (Math.Abs(matrix[i, j]) < 1e-2 || Math.Abs(matrix[i, j]) > 1e5)) throw new InvalidOperationException($"Значення в a[{i+1}, {j+1}] занадто велике / мале.");
                 }
             }
 

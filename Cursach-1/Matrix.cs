@@ -29,7 +29,7 @@ public class Matrix
         {
             for (int j = 0; j < size; j++)
             {
-                matrix[i, j] = rand.NextDouble() * 10;
+                matrix[i, j] = Math.Round(rand.NextDouble() * 10, 2);
             }
         }
 

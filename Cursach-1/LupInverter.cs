@@ -74,7 +74,6 @@ public static class LupInverter
                 L[i, k] = matrix[i, k] / matrix[k, k];
                 for (int j = k; j < n; j++)
                 {
-                    IterationCounter.AddIteration();
                     matrix[i, j] -= L[i, k] * matrix[k, j];
                 }
             }
